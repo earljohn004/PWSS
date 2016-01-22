@@ -1,5 +1,5 @@
-build-uno/platformlibs/SoftwareSerial/SoftwareSerial.o: \
- /usr/share/arduino/hardware/arduino/avr/libraries/SoftwareSerial/SoftwareSerial.cpp \
+build-uno/libs/Timer-master/Event.o: \
+ /usr/share/arduino/libraries/Timer-master/Event.cpp \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/WCharacter.h \
@@ -11,5 +11,4 @@ build-uno/platformlibs/SoftwareSerial/SoftwareSerial.o: \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/USBAPI.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/variants/standard/pins_arduino.h \
- /usr/share/arduino/hardware/arduino/avr/libraries/SoftwareSerial/SoftwareSerial.h \
- /usr/share/arduino/hardware/arduino/avr/cores/arduino/Stream.h
+ /usr/share/arduino/libraries/Timer-master/Event.h

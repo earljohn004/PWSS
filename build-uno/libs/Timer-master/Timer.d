@@ -1,4 +1,5 @@
-build-uno/PWSS.o: PWSS.ino \
+build-uno/libs/Timer-master/Timer.o: \
+ /usr/share/arduino/libraries/Timer-master/Timer.cpp \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/WCharacter.h \
@@ -11,5 +12,4 @@ build-uno/PWSS.o: PWSS.ino \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/variants/standard/pins_arduino.h \
  /usr/share/arduino/libraries/Timer-master/Timer.h \
- /usr/share/arduino/libraries/Timer-master/Event.h \
- /usr/share/arduino/libraries/Sleep_n0m1-master/Sleep_n0m1.h functions.h
+ /usr/share/arduino/libraries/Timer-master/Event.h
