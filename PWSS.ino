@@ -67,7 +67,8 @@ void waterFlow()
 	  total = total + pulseCount;
 		if(total >=1000) status = true;
 		else status=false;
-	  Serial.println(total);	
+	  //Serial.println(total);	
+		Serial.println("4,p,?,2,1,1,1,10,30,\0");
 	  pulseCount=0;
     attachInterrupt(sensorInterrupt, ISR_pulseCounter, FALLING);
 }
