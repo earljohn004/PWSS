@@ -11,7 +11,7 @@ byte sensorPin       = 2;
 
 volatile byte pulseCount;  
 boolean status;
-int eventSerial, eventReceive, eventSend;
+int eventSerial, eventReceive, eventSend, eventValve;
 int valvePin;
 int total;
 int iterator = -1; //For Serial
@@ -20,18 +20,20 @@ int iterator = -1; //For Serial
 void ISR_pulseCounter();
 void event_SendPacket();
 void event_ReceivePacket();
+void event_ToggleValve();
 
 void setup()
 {
   // Initialize a serial connection for reporting values to the host
-  Serial.begin(9600);
+  Serial.begin(38400);
   
   // Pin for Interrupt for flow sensor 
   pinMode(sensorPin, INPUT);
   pinMode(13, OUTPUT);
   digitalWrite(sensorPin, HIGH);
   eventReceive = t.every(500,event_ReceivePacket);
-  eventSend = t.every(1000 * 5,event_SendPacket);
+  eventSend = t.every(1000 * 20,event_SendPacket);
+  eventValve = t.every(1000,event_ToggleValve);
   //remaining = INITIAL;
   
   pulseCount        = 0;
@@ -65,13 +67,17 @@ void ISR_pulseCounter()
 void event_SendPacket()
 {
     sendFunction();
-	//Serial.println("sendFunction");
 }
 
 void event_ReceivePacket()
 {
     receiveFunction();
-	//Serial.println("receiveFunction");
+	iterator=-1;
+}
+
+void event_ToggleValve()
+{
+	valveFunction();
 }
 
 void serialEvent() {
@@ -80,26 +86,9 @@ void serialEvent() {
     iterator+=1;
     unsigned char inChar = (unsigned char)Serial.read();
     received_data[iterator] = inChar;
-    if (inChar == 69 ) {
+    if (inChar == 0 ) {
         flagGlobal = 1;
 		iterator=-1;
-		//Serial.println("packet complete");
-		//Serial.println(received_data[0]);
-		//Serial.println(received_data[1]);
-		//Serial.println(received_data[2]);
-		//Serial.println(received_data[3]);
-		//Serial.println(received_data[4]);
-		//Serial.println(received_data[5]);
-		//Serial.println(received_data[6]);
-		//Serial.println(received_data[7]);
-		//Serial.println(received_data[8]);
-		//Serial.println(received_data[9]);
-		//Serial.println(received_data[10]);
-		//Serial.println(received_data[11]);
-		//Serial.println(received_data[12]);
-		//Serial.println(received_data[13]);
-		//Serial.println(received_data[14]);
-		//Serial.println(received_data[15]);
-    }
+	   }
   }
 }

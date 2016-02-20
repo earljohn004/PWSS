@@ -1,5 +1,5 @@
 /*
- * TASKS.h
+  TASKS.h
  *
  *  Created on: Feb 08, 2015
  *      Author: ABAQUITA
@@ -27,19 +27,19 @@
 #define BALANCE_UPDATE	2
 #define STATUS			3
 
-/* L E D   S T A T U S */
-#define HIGHH	32		//BLU
-#define MIDHI	16		//BLU+GRN
-#define MID		8		//GRN
-#define MIDLO	4		//GRN+RED
-#define LOWw		2		//RED
-
-#define OPEN 0
-#define CLOSE 1
+///* L E D   S T A T U S */
+//#define HIGHH	32		//BLU
+//#define MIDHI	16		//BLU+GRN
+//#define MID		8		//GRN
+//#define MIDLO	4		//GRN+RED
+//#define LOWw	2		//RED
+//
+//#define OPEN 0
+//#define CLOSE 1
 /*****************************   GLOBAL VARIABLES   **********************************/
- unsigned char WCS_ID[4]={1,1,1,29}; //decode WCS_ID = ((1*1*1)+29) WCS_ID=30
+ unsigned char WCS_ID[4]={1,1,1,30}; //decode WCS_ID = ((1*1*1)+29) WCS_ID=30
  unsigned char received_data[16]={0};	//Receiver
- unsigned char send_data[15]={0};		//Send
+ unsigned char send_data[16]={0};		//Send
  unsigned char RQ_TYPE=0;
  int packetReceived=0;
 
@@ -48,14 +48,17 @@
 
  int checksum1=0, checksum2=0;
  int flagGlobal=0;
+ int flagQuery=0;
+ boolean toggle=false;
 
 /* Flow Sensor */
  unsigned char volume_balance[4]={0};
 
 int water_volume = 0;
 int deltaBALANCE;
-int VALVE_flag;
+int VALVE_flag=0;
 
+void sendFunction();
 
 /*****************************   USER FUNCTIONS   **********************************/
  int ComputeChecksum(unsigned char *packet, int len)
@@ -169,10 +172,11 @@ void receiveFunction()
 							  break;
 							 
 				case TYPE: RQ_TYPE = received_data[i]; //2
-						   Serial.println("ID received is correct");
 						   if(received_data[i] == QUERY || received_data[i] == VALVE_SW)
 						   {
 							   state = CHECKSUM;
+							   flagQuery = 1;
+
 							   
 						   }
 						   else if(received_data[i] == LOAD){
@@ -217,12 +221,14 @@ void receiveFunction()
 								
 								break;
 								
-				case TERMINATOR:	Serial.println("Checksum is correct");
+				case TERMINATOR:	
 									data_counter = 0;
 									i = -1;
 									packetReceived = 1;
 									state = HEADER;
                                     flagGlobal=0;
+									if(flagQuery==1)
+										sendFunction();
 									break;
 			}//switch end block
 		}//if end block	
@@ -272,13 +278,13 @@ void sendFunction()
 						}
 						else{
 							send_data[8]  = STATUS;		//I AM ALIVE!
-							Serial.println("I AM VERY ALIVE");
 							checksum = ComputeChecksum(send_data, 9);	//chksum : 318 = 0000 0001 | 0010 0001
 							send_data[9]  = checksum >> 8;
 							send_data[10] = checksum;
 							send_data[11] = 69;//0
                            
                             Serial.write(send_data,PACKET_TYPEA);
+							
 						}
 						packetReceived=0;
 						break;
@@ -290,7 +296,7 @@ void sendFunction()
 						
 				case LOAD:	
 							water_volume += decodeVolume(received_data);
-							Serial.println(water_volume);
+							//Serial.println(water_volume);
 							received_data[8] = QUERY;
 							RQ_TYPE = QUERY;
 							deltaBALANCE=1;
@@ -301,7 +307,19 @@ void sendFunction()
         else {
 			break;
 		}
-
 	}//while loop end block
+}
+
+void valveFunction()
+{
+	if(VALVE_flag==1)
+	{
+		toggle=!toggle;	
+		digitalWrite(13,toggle);
+		VALVE_flag=0;
+	}	
+
+	// add code for water volume closure
+		
 }
 #endif /* TASKS_H_ */
