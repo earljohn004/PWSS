@@ -296,7 +296,6 @@ void sendFunction()
 						
 				case LOAD:	
 							water_volume += decodeVolume(received_data);
-							//Serial.println(water_volume);
 							received_data[8] = QUERY;
 							RQ_TYPE = QUERY;
 							deltaBALANCE=1;
@@ -309,15 +308,12 @@ void sendFunction()
 		}
 	}//while loop end block
 }
-
 void valveFunction()
 {
 	if(VALVE_flag==1)
 	{
 		toggle=!toggle;	
-		digitalWrite(13,toggle);
-		VALVE_flag=0;
-	}	
+		digitalWrite(13,toggle); VALVE_flag=0; }	
 
 	// add code for water volume closure
 		
