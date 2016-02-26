@@ -8,7 +8,7 @@
 #ifndef TASKS_H_
 #define TASKS_H_
 
-#define PPL	461
+#define PPL	305
 
 /* P A C K E T    F O R M A T */
 #define HEADER 0
@@ -28,16 +28,17 @@
 #define STATUS			3
 
 ///* L E D   S T A T U S */
-//#define HIGHH	32		//BLU
-//#define MIDHI	16		//BLU+GRN
-//#define MID		8		//GRN
-//#define MIDLO	4		//GRN+RED
-//#define LOWw	2		//RED
+#define DAGHAN	32		//BLU
+#define MIDHI	16		//BLU+GRN
+#define MID		8		//GRN
+#define MIDLO	4		//GRN+RED
+#define GAMAY	2		//RED
 //
 //#define OPEN 0
 //#define CLOSE 1
 /*****************************   GLOBAL VARIABLES   **********************************/
- unsigned char WCS_ID[4]={1,1,1,30}; //decode WCS_ID = ((1*1*1)+29) WCS_ID=30
+//unsigned char WCS_ID[4]={1,1,1,30}; //decode WCS_ID = ((1*1*1)+29) WCS_ID=30 ID ni earl=31
+ unsigned char WCS_ID[4]={1,1,1,31}; //decode WCS_ID = ((1*1*1)+31) WCS_ID=32 ID ni ada=32
  unsigned char received_data[16]={0};	//Receiver
  unsigned char send_data[16]={0};		//Send
  unsigned char RQ_TYPE=0;
@@ -51,17 +52,38 @@
  int flagQuery=0;
  boolean toggle=false;
 
+ /*LED PINS*/
+ int R_PIN = 10;
+ int G_PIN = 11;
+ int B_PIN = 12;
+
 /* Flow Sensor */
  unsigned char volume_balance[4]={0};
 
-int water_volume = 0;
-int deltaBALANCE;
-int VALVE_flag=0;
+int water_volume = 20; //February 25
+int deltaBALANCE = 0; //February 25
+int VALVE_flag=0; //February 25
 
 void sendFunction();
 
 /*****************************   USER FUNCTIONS   **********************************/
- int ComputeChecksum(unsigned char *packet, int len)
+
+void RED_Put(boolean value)
+{
+	digitalWrite(R_PIN,value);
+}
+		     
+void GRN_Put(boolean value)
+{
+	digitalWrite(G_PIN,value);
+}
+
+void BLU_Put(boolean value)
+{
+	digitalWrite(B_PIN,value);
+}
+
+int ComputeChecksum(unsigned char *packet, int len)
 {
 	int index;
 	int sum = 0;
@@ -227,8 +249,8 @@ void receiveFunction()
 									packetReceived = 1;
 									state = HEADER;
                                     flagGlobal=0;
-									if(flagQuery==1)
-										sendFunction();
+							//		if(flagQuery==1)
+							//			sendFunction();
 									break;
 			}//switch end block
 		}//if end block	
@@ -313,9 +335,38 @@ void valveFunction()
 	if(VALVE_flag==1)
 	{
 		toggle=!toggle;	
-		digitalWrite(13,toggle); VALVE_flag=0; }	
+		digitalWrite(13,toggle); 
+		VALVE_flag=0; 
+	}	
+
+	/* LED STATUS */
+	    if(water_volume>=DAGHAN){
+	       RED_Put(0);
+	       GRN_Put(0);
+	       BLU_Put(1);
+	    }else if(water_volume>=MIDHI){
+	       RED_Put(0);
+	       GRN_Put(1);
+	       BLU_Put(1);
+	    }else if(water_volume>=MID){
+	       RED_Put(0);
+	       GRN_Put(1);
+	       BLU_Put(0);
+	    }else if(water_volume>=MIDLO){
+	       RED_Put(1);
+	       GRN_Put(1);
+	       BLU_Put(0);
+	   }else{
+	       GRN_Put(0);
+	       BLU_Put(0);
+	       RED_Put(1);
+	   }
 
 	// add code for water volume closure
+		if(water_volume==0)
+		{
+			digitalWrite(13,LOW);
+		}else digitalWrite(13,HIGH);
 		
 }
 #endif /* TASKS_H_ */
