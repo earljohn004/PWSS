@@ -338,7 +338,6 @@ void valveFunction()
 		toggle=!toggle;	
 		digitalWrite(13,toggle); 
 		VALVE_flag=0; 
-		Serial.println("toggle switch");
 	}	
 
 	/* LED STATUS */
