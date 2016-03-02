@@ -38,7 +38,8 @@
 //#define CLOSE 1
 /*****************************   GLOBAL VARIABLES   **********************************/
 //unsigned char WCS_ID[4]={1,1,1,30}; //decode WCS_ID = ((1*1*1)+29) WCS_ID=30 ID ni earl=31
- unsigned char WCS_ID[4]={1,1,1,31}; //decode WCS_ID = ((1*1*1)+31) WCS_ID=32 ID ni ada=32
+// unsigned char WCS_ID[4]={1,1,1,31}; //decode WCS_ID = ((1*1*1)+31) WCS_ID=32 ID ni ada=32
+ unsigned char WCS_ID[4]={1,1,1,32}; //decode WCS_ID = ((1*1*1)+31) WCS_ID=32 ID ni source=33
  unsigned char received_data[16]={0};	//Receiver
  unsigned char send_data[16]={0};		//Send
  unsigned char RQ_TYPE=0;
@@ -337,6 +338,7 @@ void valveFunction()
 		toggle=!toggle;	
 		digitalWrite(13,toggle); 
 		VALVE_flag=0; 
+		Serial.println("toggle switch");
 	}	
 
 	/* LED STATUS */

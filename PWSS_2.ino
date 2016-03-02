@@ -69,7 +69,7 @@ void ISR_pulseCounter()
 	   	water_volume=0;
 	}
 	else{
-	   	water_volume--;
+	   	water_volume = water_volume - 1;
 		pulseCount=0;
 	}
   }else pulseCount = pulseCount + 1;
