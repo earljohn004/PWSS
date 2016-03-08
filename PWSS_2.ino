@@ -36,10 +36,18 @@ void setup()
   pinMode(B_PIN, OUTPUT);
 
   digitalWrite(sensorPin, HIGH);
+
+  digitalWrite(13,LOW);
+  valveStatus = CLOSE;
+  VALVE_flag=0;
+  firstTimeConnection=-1;
+
+  //digitalWrite(13,HIGH);
+  //valveStatus=OPEN;
+  
   eventReceive = t.every(500,event_ReceivePacket);
-  eventSend = t.every(750,event_SendPacket); //changed Feb. 25, 2015 gabie 
-  //eventSend = t.every(1000,event_SendPacket);
-  eventValve = t.every(1000,event_ToggleValve);
+  eventSend = t.every(650,event_SendPacket); //changed Feb. 25, 2015 gabie 
+  eventValve = t.every(900,event_ToggleValve);
   
   pulseCount        = 0;
   deltaBALANCE		= 0;
@@ -67,6 +75,7 @@ void ISR_pulseCounter()
   {
 	if(water_volume==0){
 	   	water_volume=0;
+		digitalWrite(13,LOW);
 	}
 	else{
 	   	water_volume = water_volume - 1;

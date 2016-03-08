@@ -8,7 +8,7 @@
 #ifndef TASKS_H_
 #define TASKS_H_
 
-#define PPL	305
+#define PPL	461
 
 /* P A C K E T    F O R M A T */
 #define HEADER 0
@@ -34,16 +34,17 @@
 #define MIDLO	4		//GRN+RED
 #define GAMAY	2		//RED
 //
-//#define OPEN 0
-//#define CLOSE 1
+#define OPEN 0
+#define CLOSE 1
 /*****************************   GLOBAL VARIABLES   **********************************/
-//unsigned char WCS_ID[4]={1,1,1,30}; //decode WCS_ID = ((1*1*1)+29) WCS_ID=30 ID ni earl=31
-// unsigned char WCS_ID[4]={1,1,1,31}; //decode WCS_ID = ((1*1*1)+31) WCS_ID=32 ID ni ada=32
- unsigned char WCS_ID[4]={1,1,1,32}; //decode WCS_ID = ((1*1*1)+31) WCS_ID=32 ID ni source=33
+unsigned char WCS_ID[4]={1,1,1,30}; //decode WCS_ID = ((1*1*1)+29) WCS_ID=30 ID ni earl=31    WCS_ID = 31: upload March 5, 2016
+// unsigned char WCS_ID[4]={1,1,1,31}; // WCS_ID = 32 : March 4, 2016: uploaded to arduino
+// unsigned char WCS_ID[4]={1,1,1,32}; //decode WCS_ID = ((1*1*1)+31) WCS_ID=32 ID ni source=33
  unsigned char received_data[16]={0};	//Receiver
  unsigned char send_data[16]={0};		//Send
  unsigned char RQ_TYPE=0;
  int packetReceived=0;
+ int valveStatus;
 
  const byte PACKET_TYPEB = 16;
  const byte PACKET_TYPEA = 12;
@@ -51,6 +52,7 @@
  int checksum1=0, checksum2=0;
  int flagGlobal=0;
  int flagQuery=0;
+ int firstTimeConnection = -1;
  boolean toggle=false;
 
  /*LED PINS*/
@@ -63,7 +65,7 @@
 
 int water_volume = 20; //February 25
 int deltaBALANCE = 0; //February 25
-int VALVE_flag=0; //February 25
+int VALVE_flag; //February 25
 
 void sendFunction();
 
@@ -307,6 +309,14 @@ void sendFunction()
 							send_data[11] = 69;//0
                            
                             Serial.write(send_data,PACKET_TYPEA);
+
+							if(firstTimeConnection < 0){
+								firstTimeConnection = 1;
+								digitalWrite(13,HIGH);
+								VALVE_flag=0;
+								valveStatus=OPEN;
+							}
+							
 							
 						}
 						packetReceived=0;
@@ -333,12 +343,19 @@ void sendFunction()
 }
 void valveFunction()
 {
-	if(VALVE_flag==1)
+	if(VALVE_flag==1 && valveStatus==OPEN)
 	{
-		toggle=!toggle;	
-		digitalWrite(13,toggle); 
+		digitalWrite(13,LOW); 
 		VALVE_flag=0; 
-	}	
+		valveStatus=CLOSE;
+	}else ;	
+
+	if(VALVE_flag==1 && valveStatus==CLOSE)
+	{
+		digitalWrite(13,HIGH);
+		VALVE_flag=0;
+		valveStatus=OPEN;
+	}else ;
 
 	/* LED STATUS */
 	    if(water_volume>=DAGHAN){
@@ -363,11 +380,5 @@ void valveFunction()
 	       RED_Put(1);
 	   }
 
-	// add code for water volume closure
-		if(water_volume==0)
-		{
-			digitalWrite(13,LOW);
-		}else digitalWrite(13,HIGH);
-		
 }
 #endif /* TASKS_H_ */
